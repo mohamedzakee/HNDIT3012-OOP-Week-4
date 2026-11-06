@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OOP Week 4 Study Lab: Classes &amp; Objects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f5f1; --panel:#ffffff; --ink:#1d1b2e; --muted:#5f5c72; --line:#e4e1d8;
+    --brand:#3b2fc9; --brand-soft:#ece9ff; --accent:#f2a516; --accent-soft:#fff3d6;
+    --good:#1f8a5b; --good-soft:#e2f5ec; --bad:#c43d3d; --bad-soft:#fbe6e6;
+    --code-bg:#1e1c2e; --code-ink:#e8e6f5;
+    --radius:14px; --shadow:0 1px 2px rgba(20,16,60,.06),0 6px 24px rgba(20,16,60,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15.5px}
+  code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  header{background:var(--ink);color:#fff;padding:22px 20px 0}
+  .wrap{max-width:1080px;margin:0 auto}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#b9b4ff;font-weight:700}
+  h1{margin:4px 0 2px;font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.01em}
+  .sub{color:#c9c6dd;margin:0 0 14px;font-size:14.5px}
+  .stats{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:6px 12px;font-size:13px}
+  .stat b{color:var(--accent);font-size:15px}
+  nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{color:#d6d3ea;text-decoration:none;padding:11px 16px;border-radius:10px 10px 0 0;font-weight:600;font-size:14px;white-space:nowrap}
+  nav a:hover{color:#fff;background:rgba(255,255,255,.06)}
+  nav a.on{background:var(--bg);color:var(--ink)}
+  main{padding:26px 20px 60px}
+  section.view{display:none}
+  section.view.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em}
+  .lead{color:var(--muted);margin:0 0 20px;max-width:760px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.6;margin:10px 0}
+  .kw{color:#ff9ecb}.ty{color:#8fd3ff}.st{color:#b9f27c}.cm{color:#8c88a8;font-style:italic}.fn{color:#ffd479}
+  .btn{font:inherit;font-weight:600;font-size:14px;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;background:var(--brand);color:#fff;transition:transform .08s,filter .15s}
+  .btn:hover{filter:brightness(1.1)} .btn:active{transform:scale(.97)}
+  .btn.ghost{background:var(--brand-soft);color:var(--brand)}
+  .btn.amber{background:var(--accent);color:#2a1c00}
+  .btn.small{padding:6px 11px;font-size:13px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  input,select{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);width:100%}
+  input:focus,select:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:transparent}
+  label{font-size:12.5px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+
+  /* Learn */
+  .acc{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+  .acc summary{list-style:none;cursor:pointer;padding:15px 18px;font-weight:700;font-size:16px;display:flex;align-items:center;gap:12px}
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary .n{width:28px;height:28px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:13px;flex:none}
+  .acc summary::after{content:"+";margin-left:auto;font-size:22px;color:var(--muted);font-weight:400}
+  .acc[open] summary::after{content:"\2212"}
+  .acc .body{padding:0 18px 18px 58px}
+  .acc .body p{margin:8px 0}
+  .acc table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}
+  .acc th,.acc td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+  .acc th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .pillar{border-radius:12px;padding:14px;border:1px solid var(--line);background:#fbfaf7}
+  .pillar h4{margin:0 0 4px;font-size:15px}
+  .pillar p{margin:0;font-size:13.5px;color:var(--muted)}
+  .callout{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .check{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px;color:var(--muted)}
+  .check input{width:auto}
+
+  /* Factory */
+  .factory{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:18px}
+  @media (max-width:820px){.factory{grid-template-columns:1fr}}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .swatches{display:flex;gap:6px;flex-wrap:wrap}
+  .sw{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer}
+  .sw.on{border-color:var(--ink);box-shadow:0 0 0 2px #fff inset}
+  .err{color:var(--bad);font-size:13px;min-height:18px;margin:6px 0 0}
+  .mem{display:grid;grid-template-columns:150px 1fr;gap:14px}
+  @media (max-width:560px){.mem{grid-template-columns:1fr}}
+  .zone{border:2px dashed var(--line);border-radius:12px;padding:10px;min-height:150px}
+  .zone h5{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .ref{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:var(--brand-soft);color:var(--brand);border-radius:8px;padding:6px 8px;margin-bottom:6px;display:flex;justify-content:space-between}
+  .ref span:last-child{color:var(--muted)}
+  .objs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .obj{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;position:relative}
+  .obj.new{animation:pop .3s ease}
+  @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+  .obj .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .obj .dot{width:16px;height:16px;border-radius:5px;border:1px solid rgba(0,0,0,.15)}
+  .obj .nm{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px}
+  .obj .addr{margin-left:auto;font-size:11px;color:var(--muted);font-family:"JetBrains Mono",monospace}
+  .obj table{width:100%;font-size:13px;font-family:"JetBrains Mono",monospace;border-collapse:collapse}
+  .obj td{padding:2px 0}.obj td:last-child{text-align:right;font-weight:600}
+  .obj .acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .obj .acts input{width:70px;padding:5px 7px;font-size:13px}
+  .obj .x{position:absolute;top:6px;right:8px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;display:none}
+  .flash{animation:flash .6s ease}
+  @keyframes flash{0%{background:var(--accent-soft)}100%{background:#fff}}
+  .console{background:#0f0e18;color:#cdeccd;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:12px;padding:12px 14px;min-height:110px;max-height:220px;overflow:auto}
+  .console .p{color:#7b7896}.console .e{color:#ff8f8f}
+  .tabs2{display:flex;gap:6px;margin:14px 0 6px}
+  .empty{color:var(--muted);font-size:13.5px;padding:8px}
+
+  /* Bug hunt */
+  .bugcode{background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:14px 0;font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.85;overflow-x:auto}
+  .bl{display:flex;white-space:pre;padding:0 16px}
+  .bl .ln{color:#5e5a7a;width:28px;flex:none;user-select:none}
+  .tok{cursor:pointer;border-radius:4px;padding:1px 0;transition:background .12s}
+  .tok:hover{background:rgba(255,255,255,.13)}
+  .tok.hit{background:#1f8a5b;color:#fff;cursor:default}
+  .tok.miss{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .tok.reveal{outline:2px dashed var(--accent);outline-offset:1px}
+  .found li{margin-bottom:8px;font-size:14px}
+  .found code{background:var(--bad-soft);color:var(--bad);padding:1px 5px;border-radius:5px}
+  .found code.ok{background:var(--good-soft);color:var(--good)}
+  .meter{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 14px}
+  .meter i{display:block;height:100%;background:var(--good);width:0;transition:width .3s}
+
+  /* Quiz */
+  .q{font-size:18px;font-weight:700;margin:6px 0 14px}
+  .opts{display:grid;gap:8px}
+  .opt{text-align:left;font:inherit;font-size:15px;padding:12px 14px;border-radius:11px;border:1.5px solid var(--line);background:#fff;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+  .opt:hover:not(:disabled){border-color:var(--brand);background:var(--brand-soft)}
+  .opt .k{font-weight:800;color:var(--muted);width:18px;flex:none}
+  .opt.right{border-color:var(--good);background:var(--good-soft)}
+  .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opt:disabled{cursor:default;color:var(--ink);opacity:1}
+  .opt:disabled:not(.right):not(.wrong){opacity:.6}
+  .expl{margin-top:12px;padding:12px 14px;border-radius:10px;font-size:14.5px;display:none}
+  .expl.show{display:block}
+  .expl.g{background:var(--good-soft)} .expl.b{background:var(--bad-soft)}
+  .qbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);font-weight:600}
+  .result{text-align:center;padding:30px 10px}
+  .big{font-size:56px;font-weight:800;color:var(--brand);line-height:1}
+
+  /* Flashcards */
+  .fc-wrap{perspective:1200px;max-width:560px;margin:0 auto}
+  .fc{height:260px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+  .fc.flip{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;text-align:center;box-shadow:var(--shadow)}
+  .front{background:var(--brand);color:#fff}
+  .front .t{font-size:30px;font-weight:800}
+  .back{background:#fff;border:1px solid var(--line);transform:rotateY(180deg);font-size:17px}
+  .hint{font-size:12.5px;opacity:.75;margin-top:14px}
+  .fc-ctrl{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .fc-ctrl .count{font-weight:700;color:var(--muted);min-width:70px;text-align:center}
+
+  /* Predict */
+  .predict-out{margin-top:8px}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 20px 30px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="kicker">HNDIT3012 &middot; Object Oriented Programming &middot; Week 4</div>
+        <h1>Classes &amp; Objects Study Lab</h1>
+        <p class="sub">Learn it, build it, debug it, then test yourself.</p>
+      </div>
+      <div class="stats">
+        <div class="stat">Topics read <b id="sTopics">0/7</b></div>
+        <div class="stat">Bugs found <b id="sBugs">0/10</b></div>
+        <div class="stat">Best quiz <b id="sQuiz">&ndash;</b></div>
+      </div>
+    </div>
+    <nav id="nav">
+      <a href="#learn" data-v="learn">1 &middot; Learn</a>
+      <a href="#factory" data-v="factory">2 &middot; Object Factory</a>
+      <a href="#bughunt" data-v="bughunt">3 &middot; Bug Hunt</a>
+      <a href="#predict" data-v="predict">4 &middot; Predict the Output</a>
+      <a href="#quiz" data-v="quiz">5 &middot; Quiz</a>
+      <a href="#cards" data-v="cards">6 &middot; Flashcards</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ LEARN ============ -->
+<section class="view" id="v-learn">
+  <h2>Learn the essentials</h2>
+  <p class="lead">Seven short topics covering every slide in Week 4. Open each one, read it, and tick "I've got this" to track progress.</p>
+
+  <details class="acc" data-t="0"><summary><span class="n">1</span>What is Object Oriented Programming?</summary><div class="body">
+    <p><b>OOP</b> is a <b>programming paradigm</b> that uses <b>objects</b> to represent and manipulate data using real-world concepts.</p>
+    <p>Data is <b>encapsulated</b> inside objects, and each object is defined by its <b>properties (attributes)</b> and <b>behaviours (methods)</b>.</p>
+    <table><tr><th>OOP gives you</th><th>Meaning</th></tr>
+      <tr><td><b>Modular</b> code</td><td>Split into separate, self-contained classes</td></tr>
+      <tr><td><b>Reusable</b> code</td><td>One class makes many objects</td></tr>
+      <tr><td><b>Maintainable</b> code</td><td>Changes stay inside one class</td></tr></table>
+    <div class="callout">Procedural thinking asks "what <i>steps</i>?". OOP asks "what <i>things</i> exist, what do they <i>know</i>, and what can they <i>do</i>?"</div>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="1"><summary><span class="n">2</span>The four main OOP concepts</summary><div class="body">
+    <div class="grid g4" style="margin:10px 0">
+      <div class="pillar"><h4>Encapsulation</h4><p>Bundle data and methods together; hide fields with <code>private</code>.</p></div>
+      <div class="pillar"><h4>Inheritance</h4><p>A child class reuses a parent class. <i>Car is a Vehicle.</i></p></div>
+      <div class="pillar"><h4>Polymorphism</h4><p>One name, many forms. The same call acts differently.</p></div>
+      <div class="pillar"><h4>Abstraction</h4><p>Show what it does, hide how it does it.</p></div>
+    </div>
+    <div class="callout">Memory hook: <b>A PIE</b> &rarr; Abstraction, Polymorphism, Inheritance, Encapsulation. Later weeks cover each in depth.</div>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="2"><summary><span class="n">3</span>Class vs object</summary><div class="body">
+    <p>A <b>class</b> is a blueprint or prototype from which objects are created. An <b>object</b> is a software bundle of related <b>state</b> and <b>behaviour</b>.</p>
+    <table><tr><th>Object (from class Vehicle)</th><th>doors</th><th>speed</th><th>color</th></tr>
+      <tr><td><code>car</code></td><td>5</td><td>180</td><td>white</td></tr>
+      <tr><td><code>bike</code></td><td>0</td><td>90</td><td>brown</td></tr>
+      <tr><td><code>raceCar</code></td><td>2</td><td>400</td><td>red</td></tr></table>
+    <p>Same fields, same method <code>run()</code>, but <b>each object keeps its own values</b>.</p>
+    <table><tr><th>Class</th><th>Object</th></tr>
+      <tr><td>Blueprint / template</td><td>Real instance built from it</td></tr>
+      <tr><td>Written once with <code>class</code></td><td>Created many times with <code>new</code></td></tr>
+      <tr><td>e.g. <code>Vehicle</code></td><td>e.g. <code>car</code>, <code>bike</code></td></tr></table>
+    <div class="callout">Analogy: a house plan (class) and the houses built from it (objects).</div>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="3"><summary><span class="n">4</span>Anatomy of a Java class</summary><div class="body">
+<pre class="code"><span class="kw">class</span> <span class="ty">Vehicle</span> {
+    <span class="kw">private</span> <span class="ty">int</span> doors;        <span class="cm">// fields = state</span>
+    <span class="kw">private</span> <span class="ty">int</span> speed;
+    <span class="kw">private</span> <span class="ty">String</span> color;
+
+    <span class="kw">public</span> <span class="kw">void</span> <span class="fn">run</span>() {       <span class="cm">// method = behaviour</span>
+        System.out.<span class="fn">println</span>(<span class="st">"Vehicle is running, speed is "</span> + speed);
+    }
+}</pre>
+    <table><tr><th>Part</th><th>Meaning</th></tr>
+      <tr><td><code>private</code></td><td>Only code inside this class can use it</td></tr>
+      <tr><td><code>public</code></td><td>Any class can use it</td></tr>
+      <tr><td><code>int</code>, <code>String</code></td><td>Data types (<code>String</code> has a capital S)</td></tr>
+      <tr><td><code>void</code></td><td>The method returns nothing</td></tr></table>
+    <div class="callout">Conventions: classes in <code>PascalCase</code>, fields and methods in <code>camelCase</code>. Java is case-sensitive.</div>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="4"><summary><span class="n">5</span>Creating and using objects</summary><div class="body">
+<pre class="code"><span class="ty">Vehicle</span> car = <span class="kw">new</span> <span class="ty">Vehicle</span>();   <span class="cm">// create</span>
+car.<span class="fn">run</span>();                       <span class="cm">// use (dot operator)</span></pre>
+    <table><tr><th>Piece</th><th>Role</th></tr>
+      <tr><td><code>Vehicle</code></td><td>Type of the variable</td></tr>
+      <tr><td><code>car</code></td><td>Reference variable (lives on the <b>stack</b>)</td></tr>
+      <tr><td><code>new</code></td><td>Allocates a new object on the <b>heap</b></td></tr>
+      <tr><td><code>Vehicle()</code></td><td>Calls the constructor</td></tr></table>
+    <p>Fields never set get defaults: <code>int</code> &rarr; 0, <code>double</code> &rarr; 0.0, <code>boolean</code> &rarr; false, objects &rarr; <code>null</code>. That's why the slide program prints <code>speed is 0</code>.</p>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="5"><summary><span class="n">6</span>Constructors and <code>this</code></summary><div class="body">
+<pre class="code"><span class="kw">public</span> <span class="ty">Vehicle</span>(<span class="ty">int</span> doors, <span class="ty">int</span> speed, <span class="ty">String</span> color) {
+    <span class="kw">this</span>.doors = doors;   <span class="cm">// this.doors = field, doors = parameter</span>
+    <span class="kw">this</span>.speed = speed;
+    <span class="kw">this</span>.color = color;
+}
+<span class="ty">Vehicle</span> car = <span class="kw">new</span> <span class="ty">Vehicle</span>(5, 180, <span class="st">"white"</span>);</pre>
+    <p>A constructor has the <b>exact class name</b> and <b>no return type</b> (not even <code>void</code>). It runs automatically on <code>new</code>.</p>
+    <p>If you write none, Java gives a <b>default constructor</b>. Once you write your own, the default disappears.</p>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+
+  <details class="acc" data-t="6"><summary><span class="n">7</span>Getters, setters and encapsulation</summary><div class="body">
+<pre class="code"><span class="kw">public</span> <span class="ty">int</span> <span class="fn">getSpeed</span>() { <span class="kw">return</span> speed; }
+
+<span class="kw">public</span> <span class="kw">void</span> <span class="fn">setSpeed</span>(<span class="ty">int</span> speed) {
+    <span class="kw">if</span> (speed >= 0) <span class="kw">this</span>.speed = speed;   <span class="cm">// reject bad values</span>
+}</pre>
+    <p>Private fields + public getters/setters = <b>encapsulation</b>. A setter can refuse bad data like <code>-500</code>; a public field could not.</p>
+    <div class="callout">Try it in the <a href="#factory">Object Factory</a>: set a negative speed and watch the setter protect the object.</div>
+    <label class="check"><input type="checkbox"> I've got this</label>
+  </div></details>
+</section>
+
+<!-- ============ FACTORY ============ -->
+<section class="view" id="v-factory">
+  <h2>Object Factory</h2>
+  <p class="lead">One <code>Vehicle</code> class, as many objects as you like. Create objects, watch them appear in memory, call their methods, and see the Java code build itself.</p>
+  <div class="factory">
+    <div class="card">
+      <span class="pill">The class (blueprint)</span>
+<pre class="code" style="font-size:12.5px"><span class="kw">class</span> <span class="ty">Vehicle</span> {
+  <span class="kw">private</span> <span class="ty">int</span> doors;
+  <span class="kw">private</span> <span class="ty">int</span> speed;
+  <span class="kw">private</span> <span class="ty">String</span> color;
+
+  <span class="kw">public</span> <span class="ty">Vehicle</span>(<span class="ty">int</span> d, <span class="ty">int</span> s, <span class="ty">String</span> c) {...}
+  <span class="kw">public</span> <span class="kw">void</span> <span class="fn">run</span>() {...}
+  <span class="kw">public</span> <span class="kw">void</span> <span class="fn">setSpeed</span>(<span class="ty">int</span> s) {...}
+}</pre>
+      <form id="mkForm" autocomplete="off">
+        <label for="fName">Variable name</label>
+        <input id="fName" placeholder="e.g. myCar" style="margin-bottom:10px">
+        <div class="form-row">
+          <div><label for="fDoors">doors</label><input id="fDoors" type="number" min="0" max="10" value="4"></div>
+          <div><label for="fSpeed">speed</label><input id="fSpeed" type="number" value="120"></div>
+        </div>
+        <label>color</label>
+        <div class="swatches" id="swatches"></div>
+        <p class="err" id="fErr"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" type="submit">new Vehicle(...)</button>
+          <button class="btn ghost" type="button" id="loadSlides">Load slide examples</button>
+          <button class="btn ghost" type="button" id="resetF">Reset</button>
+        </div>
+      </form>
+    </div>
+    <div>
+      <div class="card">
+        <div class="mem">
+          <div class="zone"><h5>Stack &middot; references</h5><div id="stack"><div class="empty">No variables yet</div></div></div>
+          <div class="zone"><h5>Heap &middot; objects</h5><div class="objs" id="heap"><div class="empty">Objects you create appear here</div></div></div>
+        </div>
+        <div class="tabs2">
+          <button class="btn small" id="tConsole">Console output</button>
+          <button class="btn small ghost" id="tCode">Generated Java</button>
+        </div>
+        <div class="console" id="console"><span class="p">// Output from System.out.println appears here</span></div>
+        <pre class="code" id="gen" style="display:none;max-height:260px"></pre>
+      </div>
+      <div class="callout" style="margin-top:14px">Notice: every object has the <b>same fields and methods</b> but its <b>own values</b>. Changing one object's speed never touches another's. The reference on the stack only holds the object's <i>address</i>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUG HUNT ============ -->
+<section class="view" id="v-bughunt">
+  <h2>Bug Hunt</h2>
+  <p class="lead">Click on each mistake in the code. Wrong clicks shake. "Find and correct the errors" is a classic exam question, so this is great practice.</p>
+  <div class="tabs2" style="margin-top:0">
+    <button class="btn small" id="r1">Round 1 &middot; Slide code (5 bugs)</button>
+    <button class="btn small ghost" id="r2">Round 2 &middot; Book class (5 bugs)</button>
+  </div>
+  <div class="grid g2" style="margin-top:10px">
+    <div>
+      <div class="bugcode" id="bugcode"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn ghost small" id="bugHint">Show a hint</button>
+        <button class="btn ghost small" id="bugReset">Restart round</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="qbar"><span id="bugTitle">Bugs found</span><span id="bugCount">0 / 5</span></div>
+      <div class="meter"><i id="bugMeter"></i></div>
+      <ol class="found" id="found"></ol>
+      <p class="empty" id="foundEmpty">Found bugs and their fixes will be listed here.</p>
+      <p class="empty" id="missTxt"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREDICT ============ -->
+<section class="view" id="v-predict">
+  <h2>Predict the Output</h2>
+  <p class="lead">Read the code, decide what it prints, then check. Thinking through code line by line is the fastest way to understand objects.</p>
+  <div id="predictBox"></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="view" id="v-quiz">
+  <h2>Quiz</h2>
+  <p class="lead">12 questions in a random order. You'll get instant feedback with an explanation after each answer.</p>
+  <div class="card" id="quizBox" style="max-width:760px"></div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="view" id="v-cards">
+  <h2>Flashcards</h2>
+  <p class="lead">Tap the card to flip it. Use the arrow keys or buttons to move. Say the definition out loud before you flip.</p>
+  <div class="fc-wrap">
+    <div class="fc" id="fc" tabindex="0" role="button" aria-label="Flip card">
+      <div class="face front"><div class="t" id="fcT"></div><div class="hint">tap to flip</div></div>
+      <div class="face back"><div id="fcD"></div><div class="hint">tap to flip back</div></div>
+    </div>
+    <div class="fc-ctrl">
+      <button class="btn ghost" id="fcPrev">&larr; Prev</button>
+      <span class="count" id="fcN"></span>
+      <button class="btn ghost" id="fcNext">Next &rarr;</button>
+      <button class="btn amber" id="fcShuf">Shuffle</button>
+    </div>
+  </div>
+</section>
+</main>
+<footer>HNDIT3012 Object Oriented Programming &middot; Week 4: Classes &amp; Objects &middot; SLIATE ATI Sammanthurai</footer>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('oopw4_'+k); return v===null? d : JSON.parse(v);}catch(e){return d;} },
+  set(k, v){ try{ localStorage.setItem('oopw4_'+k, JSON.stringify(v)); }catch(e){} }
+};
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
+
+/* ---------- routing ---------- */
+const views = ['learn','factory','bughunt','predict','quiz','cards'];
+function route(){
+  let v = (location.hash||'').slice(1);
+  if(!views.includes(v)) v = 'learn';
+  $$('section.view').forEach(s => s.classList.toggle('on', s.id === 'v-'+v));
+  $$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', route);
+
+/* ---------- learn progress ---------- */
+let read = store.get('read', []);
+function paintTopics(){ $('#sTopics').textContent = read.length + '/7'; }
+$$('.acc').forEach(d => {
+  const t = +d.dataset.t, cb = d.querySelector('.check input');
+  cb.checked = read.includes(t);
+  cb.addEventListener('change', () => {
+    read = read.filter(x => x !== t); if(cb.checked) read.push(t);
+    store.set('read', read); paintTopics();
+  });
+});
+paintTopics();
+
+/* ---------- factory ---------- */
+const COLORS = [['white','#f4f4f4'],['red','#e04848'],['blue','#3b6fe0'],['black','#222'],['brown','#8a5a2b'],['silver','#b8bcc4'],['green','#2f9e5c'],['yellow','#f2c230']];
+let selColor = 'white', objects = [], addr = 0x1a2f, log = [], codeLines = [], newIdx = -1;
+const sw = $('#swatches');
+COLORS.forEach(([n,h]) => {
+  const b = document.createElement('button'); b.type='button'; b.className='sw'+(n===selColor?' on':''); b.style.background=h; b.title=n; b.setAttribute('aria-label', n);
+  b.onclick = () => { selColor = n; $$('.sw').forEach(x => x.classList.toggle('on', x===b)); };
+  sw.appendChild(b);
+});
+const hexOf = n => (COLORS.find(c => c[0]===n)||[0,'#ccc'])[1];
+const RESERVED = ['class','new','int','public','private','void','static','return','this','if','else','for','while','double','boolean','String','Vehicle','true','false','null'];
+
+function out(text, cls){ log.push({text, cls}); renderConsole(); }
+function renderConsole(){
+  const c = $('#console');
+  c.innerHTML = log.length ? log.map(l => `<div class="${l.cls||''}">${esc(l.text)}</div>`).join('') : '<span class="p">// Output from System.out.println appears here</span>';
+  c.scrollTop = c.scrollHeight;
+}
+function renderCode(){
+  const body = codeLines.length ? codeLines.map(l => '        ' + l).join('\n') : '        // create some objects...';
+  $('#gen').textContent = 'public class VehicleUse {\n    public static void main(String[] args) {\n' + body + '\n    }\n}';
+}
+function create(name, doors, speed, color, silent){
+  const o = {name, doors, speed, color, addr: '@' + (addr += 0x18 + Math.floor(Math.random()*40)).toString(16)};
+  objects.push(o); newIdx = objects.length - 1;
+  codeLines.push(`Vehicle ${name} = new Vehicle(${doors}, ${speed}, "${color}");`);
+  if(!silent) out(`> Vehicle ${name} = new Vehicle(${doors}, ${speed}, "${color}");  // object created at ${o.addr}`, 'p');
+  renderMem(); renderCode();
+}
+function renderMem(){
+  const st = $('#stack'), hp = $('#heap');
+  if(!objects.length){ st.innerHTML = '<div class="empty">No variables yet</div>'; hp.innerHTML = '<div class="empty">Objects you create appear here</div>'; return; }
+  st.innerHTML = objects.map(o => `<div class="ref"><span>${esc(o.name)}</span><span>${o.addr}</span></div>`).join('');
+  const html = objects.map((o,i) => `
+    <div class="obj${i===newIdx?' new':''}" id="obj${i}">
+      <div class="head"><span class="dot" style="background:${hexOf(o.color)}"></span><span class="nm">${esc(o.name)}</span><span class="addr">${o.addr}</span></div>
+      <table><tr><td>doors</td><td>${o.doors}</td></tr><tr><td>speed</td><td>${o.speed}</td></tr><tr><td>color</td><td>"${esc(o.color)}"</td></tr></table>
+      <div class="acts">
+        <button class="btn small" data-run="${i}">run()</button>
+        <input type="number" placeholder="speed" data-sv="${i}" aria-label="new speed for ${esc(o.name)}">
+        <button class="btn small ghost" data-set="${i}">setSpeed</button>
+      </div>
+    </div>`).join('');
+  hp.innerHTML = html; newIdx = -1;
+}
+$('#heap').addEventListener('click', e => {
+  const r = e.target.dataset.run, s = e.target.dataset.set;
+  if(r !== undefined){
+    const o = objects[+r];
+    codeLines.push(`${o.name}.run();`); renderCode();
+    out(`The ${o.color} vehicle is running at ${o.speed} km/h`);
+  }
+  if(s !== undefined){
+    const o = objects[+s], inp = document.querySelector(`[data-sv="${s}"]`), v = inp.value.trim();
+    if(v === '' || isNaN(+v) || !Number.isInteger(+v)){ out(`// enter a whole number first`, 'e'); return; }
+    codeLines.push(`${o.name}.setSpeed(${+v});`); renderCode();
+    if(+v < 0){ out(`Speed cannot be negative!   // ${o.name}.speed stays ${o.speed} (encapsulation at work)`, 'e'); }
+    else { o.speed = +v; renderMem(); const el = $('#obj'+s); if(el){ el.classList.add('flash'); } out(`> ${o.name}.setSpeed(${+v});  // only ${o.name} changed`, 'p'); }
+  }
+});
+$('#mkForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#fName').value.trim(), d = $('#fDoors').value, s = $('#fSpeed').value, err = $('#fErr');
+  err.textContent = '';
+  if(!name) return err.textContent = 'Give the reference variable a name.';
+  if(!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) return err.textContent = 'Not a valid Java identifier: start with a letter, no spaces or symbols.';
+  if(RESERVED.includes(name)) return err.textContent = `"${name}" is a keyword or type name, so it can't be a variable name.`;
+  if(objects.some(o => o.name === name)) return err.textContent = `variable ${name} is already defined (compile error!). Pick another name.`;
+  if(d === '' || s === '' || !Number.isInteger(+d) || !Number.isInteger(+s)) return err.textContent = 'doors and speed are int fields: whole numbers only.';
+  if(/^[A-Z]/.test(name)) out(`// Tip: by convention variables use camelCase, e.g. ${name[0].toLowerCase()+name.slice(1)}`, 'p');
+  create(name, +d, +s, selColor);
+  $('#fName').value = '';
+});
+$('#loadSlides').onclick = () => {
+  [['car',5,180,'white'],['bike',0,90,'brown'],['raceCar',2,400,'red']].forEach(([n,d,s,c]) => { if(!objects.some(o=>o.name===n)) create(n,d,s,c); });
+};
+$('#resetF').onclick = () => { objects = []; log = []; codeLines = []; renderMem(); renderConsole(); renderCode(); $('#fErr').textContent=''; };
+$('#tConsole').onclick = () => { $('#console').style.display=''; $('#gen').style.display='none'; $('#tConsole').classList.remove('ghost'); $('#tCode').classList.add('ghost'); };
+$('#tCode').onclick = () => { $('#console').style.display='none'; $('#gen').style.display=''; $('#tCode').classList.remove('ghost'); $('#tConsole').classList.add('ghost'); };
+renderCode();
+
+/* ---------- bug hunt ---------- */
+const ROUNDS = [
+  { title:'Round 1: slide code',
+    code:[
+      'class Vehicle',
+      '{ private int door;',
+      '  private int speed;',
+      '  private string color;',
+      '  public void run()',
+      '  {',
+      '  System.out.println(“Vehicle  is running speed is “+speed);',
+      '  }',
+      '}',
+      '',
+      'Class VehicleUse',
+      '{',
+      'public static void main (String args[])',
+      '{',
+      'Vehicle car=new Vehicle();',
+      'Vehicle bike=new Vehicle();',
+      'Vehicle raceCar=new Vehicle();',
+      'car.run();',
+      'Bike.run();',
+      'racecar.run();',
+      '}',
+      '}'
+    ],
+    bugs:[
+      {line:3, text:'string', fix:'String', why:'String is a class, so it needs a capital S.'},
+      {line:6, text:'“Vehicle  is running speed is “', fix:'"Vehicle is running speed is "', why:'Curly “smart” quotes are not valid. Java needs straight double quotes.'},
+      {line:10, text:'Class', fix:'class', why:'Java keywords are all lowercase.'},
+      {line:18, text:'Bike', fix:'bike', why:'The variable was declared as bike. Java is case-sensitive.'},
+      {line:19, text:'racecar', fix:'raceCar', why:'The variable was declared as raceCar, with a capital C.'}
+    ]},
+  { title:'Round 2: Book class',
+    code:[
+      'Class Book {',
+      '    private string title;',
+      '    private int pages',
+      '',
+      '    public void Book(String title, int pages) {',
+      '        title = title;',
+      '        this.pages = pages;',
+      '    }',
+      '}'
+    ],
+    bugs:[
+      {line:0, text:'Class', fix:'class', why:'Keywords are lowercase.'},
+      {line:1, text:'string', fix:'String', why:'String needs a capital S.'},
+      {line:2, text:'pages', fix:'pages;', why:'Every field declaration must end with a semicolon.'},
+      {line:4, text:'void', fix:'public Book(...)', why:'A constructor has NO return type. With void it is just an ordinary method that never runs on new.'},
+      {line:5, text:'title', nth:0, fix:'this.title = title;', why:'Without this, the parameter is assigned to itself and the field stays null.'}
+    ]}
+];
+let round = 0, bugState = [[],[]], misses = [0,0];
+const savedBugs = store.get('bugs', null); if(savedBugs && savedBugs.length===2) bugState = savedBugs;
+function totalBugs(){ return bugState[0].length + bugState[1].length; }
+function paintBugStat(){ $('#sBugs').textContent = totalBugs() + '/10'; }
+function tokenize(line){ return line.match(/\s+|“[^“”]*“|"[^"]*"|[A-Za-z_][A-Za-z0-9_]*|\d+|./g) || []; }
+function renderBugs(){
+  const R = ROUNDS[round], found = bugState[round];
+  $('#bugcode').innerHTML = R.code.map((line, li) => {
+    const counts = {};
+    const toks = tokenize(line).map(t => {
+      if(/^\s+$/.test(t)) return t;
+      counts[t] = (counts[t]||0); const nth = counts[t]++;
+      const bi = R.bugs.findIndex(b => b.line===li && b.text===t && (b.nth===undefined || b.nth===nth));
+      const hit = bi >= 0 && found.includes(bi);
+      return `<span class="tok${hit?' hit':''}" data-l="${li}" data-b="${bi}">${esc(t)}</span>`;
+    }).join('');
+    return `<div class="bl"><span class="ln">${li+1}</span><span>${toks||' '}</span></div>`;
+  }).join('');
+  const n = found.length;
+  $('#bugTitle').textContent = R.title;
+  $('#bugCount').textContent = n + ' / ' + R.bugs.length;
+  $('#bugMeter').style.width = (n / R.bugs.length * 100) + '%';
+  $('#found').innerHTML = found.map(i => { const b = R.bugs[i]; return `<li>Line ${b.line+1}: <code>${esc(b.text)}</code> &rarr; <code class="ok">${esc(b.fix)}</code><br><span style="color:var(--muted)">${esc(b.why)}</span></li>`; }).join('');
+  $('#foundEmpty').style.display = n ? 'none' : '';
+  $('#missTxt').innerHTML = n === R.bugs.length ? `<b style="color:var(--good)">All bugs fixed!</b> ${misses[round] ? misses[round] + ' wrong click(s).' : 'Perfect, no wrong clicks.'}${round===0 ? ' Bonus: <code>door</code> should be <code>doors</code> to match the diagram, and nothing sets the speed, so every vehicle runs at 0.' : ''}` : (misses[round] ? misses[round] + ' wrong click(s) so far.' : '');
+  $('#r1').classList.toggle('ghost', round!==0); $('#r2').classList.toggle('ghost', round!==1);
+  paintBugStat();
+}
+$('#bugcode').addEventListener('click', e => {
+  const t = e.target.closest('.tok'); if(!t || t.classList.contains('hit')) return;
+  const bi = +t.dataset.b;
+  if(bi >= 0){ if(!bugState[round].includes(bi)) bugState[round].push(bi); store.set('bugs', bugState); renderBugs(); }
+  else { misses[round]++; t.classList.remove('miss'); void t.offsetWidth; t.classList.add('miss'); renderBugs(); }
+});
+$('#bugHint').onclick = () => {
+  const R = ROUNDS[round], left = R.bugs.map((b,i)=>i).filter(i => !bugState[round].includes(i));
+  if(!left.length) return;
+  const b = R.bugs[left[0]];
+  $$('#bugcode .bl')[b.line].querySelectorAll('.tok').forEach(t => { if(+t.dataset.b === left[0]) t.classList.add('reveal'); });
+  $('#missTxt').textContent = 'Hint: look at line ' + (b.line+1) + ' (outlined in amber).';
+};
+$('#bugReset').onclick = () => { bugState[round] = []; misses[round] = 0; store.set('bugs', bugState); renderBugs(); };
+$('#r1').onclick = () => { round = 0; renderBugs(); };
+$('#r2').onclick = () => { round = 1; renderBugs(); };
+renderBugs();
+
+/* ---------- predict ---------- */
+const PRED = [
+  { code:`Vehicle car = new Vehicle();   // no constructor written, fields never set
+car.run();   // run() prints "speed is " + speed`,
+    opts:['speed is 0','speed is null','Compile error','speed is 180'], a:0,
+    why:'An int field that is never set gets the default value 0.' },
+  { code:`Vehicle a = new Vehicle(4, 100, "blue");
+Vehicle b = new Vehicle(2, 250, "red");
+a.setSpeed(60);
+System.out.println(b.getSpeed());`,
+    opts:['60','250','100','0'], a:1,
+    why:'a and b are separate objects with their own fields. Changing a does not affect b.' },
+  { code:`Vehicle a = new Vehicle(4, 100, "blue");
+Vehicle b = a;          // copies the reference, not the object
+b.setSpeed(30);
+System.out.println(a.getSpeed());`,
+    opts:['100','30','0','Compile error'], a:1,
+    why:'b = a makes both variables point to the SAME object on the heap, so the change shows through a too.' },
+  { code:`Vehicle v = new Vehicle(4, 120, "white");
+v.setSpeed(-50);        // setter rejects negatives
+System.out.println(v.getSpeed());`,
+    opts:['-50','0','120','Exception'], a:2,
+    why:'The setter checks speed >= 0 and refuses -50, so the private field keeps 120. That is encapsulation.' },
+  { code:`class Box {
+    private int size;
+    public Box(int size) { size = size; }   // no "this"
+    public int getSize() { return size; }
+}
+System.out.println(new Box(9).getSize());`,
+    opts:['9','0','Compile error','null'], a:1,
+    why:'size = size assigns the parameter to itself. The field is never set, so it stays at the default 0. Use this.size = size.' }
+];
+function renderPredict(){
+  $('#predictBox').innerHTML = PRED.map((p,i) => `
+    <div class="card" style="margin-bottom:14px">
+      <span class="pill">Puzzle ${i+1}</span>
+      <pre class="code">${esc(p.code)}</pre>
+      <div class="opts" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">${p.opts.map((o,j)=>`<button class="opt mono" data-p="${i}" data-o="${j}"><span>${esc(o)}</span></button>`).join('')}</div>
+      <div class="expl" id="pe${i}"></div>
+    </div>`).join('');
+}
+$('#predictBox').addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if(!b || b.disabled) return;
+  const i = +b.dataset.p, j = +b.dataset.o, p = PRED[i];
+  b.parentElement.querySelectorAll('.opt').forEach(x => { x.disabled = true; if(+x.dataset.o === p.a) x.classList.add('right'); });
+  if(j !== p.a) b.classList.add('wrong');
+  const ex = $('#pe'+i); ex.className = 'expl show ' + (j===p.a?'g':'b');
+  ex.innerHTML = `<b>${j===p.a?'Correct!':'Not quite.'}</b> Output: <code>${esc(p.opts[p.a])}</code>. ${esc(p.why)}`;
+});
+renderPredict();
+
+/* ---------- quiz ---------- */
+const QUIZ = [
+  {q:'A class is best described as…', o:['A running copy of a program','A blueprint from which objects are created','A type of variable','A Java library'], a:1, e:'A class is a blueprint or prototype; objects are built from it.'},
+  {q:'An object is…', o:['A software bundle of related state and behaviour','A keyword in Java','Only a method','A file on disk'], a:0, e:'This is the exact slide definition: state (fields) + behaviour (methods).'},
+  {q:'Which keyword creates a new object?', o:['class','this','new','void'], a:2, e:'new allocates memory on the heap and calls the constructor.'},
+  {q:'In  Vehicle car = new Vehicle();  what is car?', o:['A class','A constructor','A reference variable','A method'], a:2, e:'car is a reference variable that holds the address of the object.'},
+  {q:'A private field can be accessed by…', o:['Any class','Only the same class','Only main()','Every package'], a:1, e:'private limits access to code inside the same class.'},
+  {q:'Which line will NOT compile?', o:['String name;','private int speed;','string color;','public void run() {}'], a:2, e:'string does not exist. The class is String with a capital S.'},
+  {q:'Default value of an int field that is never set?', o:['null','0','1','Undefined / garbage'], a:1, e:'Java gives numeric fields 0, booleans false, and objects null.'},
+  {q:'Which is a correct constructor for class Vehicle?', o:['public void Vehicle() {}','public Vehicle() {}','public vehicle() {}','Vehicle public() {}'], a:1, e:'Exact class name, no return type at all.'},
+  {q:'Which is NOT one of the four main OOP concepts?', o:['Encapsulation','Compilation','Inheritance','Polymorphism'], a:1, e:'The four are Abstraction, Polymorphism, Inheritance, Encapsulation (A PIE).'},
+  {q:'What does  this.speed = speed;  do?', o:['Copies the field into the parameter','Stores the parameter value in the object\'s field','Creates a new object','Nothing'], a:1, e:'this.speed is the field of the current object; speed alone is the parameter.'},
+  {q:'Which pair shows good Java naming?', o:['class vehicle / int Speed','class Vehicle / int speed','class VEHICLE / int SPEED','class vehicle_class / int speed_value'], a:1, e:'Classes use PascalCase; variables and fields use camelCase.'},
+  {q:'Hiding fields with private and exposing public methods is called…', o:['Inheritance','Polymorphism','Encapsulation','Instantiation'], a:2, e:'Encapsulation bundles data with methods and protects the data.'}
+];
+let qOrder = [], qi = 0, qScore = 0;
+function paintBest(){ const b = store.get('best', null); $('#sQuiz').textContent = b===null ? '–' : b + '/12'; }
+function startQuiz(){ qOrder = shuffle(QUIZ.map((_,i)=>i)); qi = 0; qScore = 0; showQ(); }
+function showQ(){
+  const box = $('#quizBox');
+  if(qi >= qOrder.length){
+    const best = Math.max(store.get('best', 0), qScore); store.set('best', best); paintBest();
+    const msg = qScore >= 11 ? 'Excellent! You are exam-ready on Week 4.' : qScore >= 8 ? 'Good work. Review the ones you missed in Learn.' : 'Keep going: reread the Learn tab and try the Object Factory, then retry.';
+    box.innerHTML = `<div class="result"><div class="big">${qScore}/12</div><p style="font-size:17px">${msg}</p><button class="btn" id="qAgain">Try again</button></div>`;
+    $('#qAgain').onclick = startQuiz; return;
+  }
+  const Q = QUIZ[qOrder[qi]], keys = 'ABCD';
+  box.innerHTML = `<div class="qbar"><span>Question ${qi+1} of 12</span><span>Score ${qScore}</span></div>
+    <div class="meter"><i style="width:${qi/12*100}%;background:var(--brand)"></i></div>
+    <div class="q">${esc(Q.q)}</div>
+    <div class="opts">${Q.o.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${keys[j]}</span><span>${esc(o)}</span></button>`).join('')}</div>
+    <div class="expl" id="qe"></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" id="qNext" style="display:none">${qi===11?'See result':'Next question'} &rarr;</button></div>`;
+  box.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const j = +b.dataset.j, ok = j === Q.a; if(ok) qScore++;
+    box.querySelectorAll('.opt').forEach(x => { x.disabled = true; if(+x.dataset.j === Q.a) x.classList.add('right'); });
+    if(!ok) b.classList.add('wrong');
+    const ex = $('#qe'); ex.className = 'expl show ' + (ok?'g':'b'); ex.innerHTML = `<b>${ok?'Correct!':'Not quite.'}</b> ${esc(Q.e)}`;
+    $('#qNext').style.display = ''; $('#qNext').focus();
+  });
+  $('#qNext').onclick = () => { qi++; showQ(); };
+}
+paintBest(); startQuiz();
+
+/* ---------- flashcards ---------- */
+let CARDS = [
+  ['OOP','A programming paradigm that models a program as objects with state and behaviour.'],
+  ['Class','A blueprint or prototype from which objects are created.'],
+  ['Object','A software bundle of related state and behaviour; an instance of a class.'],
+  ['State','The current values of an object’s fields (attributes).'],
+  ['Behaviour','What an object can do, written as methods.'],
+  ['Field','A variable declared inside a class that stores state.'],
+  ['Method','A block of code inside a class that performs an action.'],
+  ['new','Keyword that allocates memory for an object and calls its constructor.'],
+  ['Constructor','Special method with the class name and no return type; sets up a new object.'],
+  ['this','A reference to the current object. this.speed = the field.'],
+  ['private','Access modifier: only the same class can use the member.'],
+  ['public','Access modifier: any class can use the member.'],
+  ['Reference variable','Holds the memory address of an object (lives on the stack).'],
+  ['Heap','The memory area where objects live.'],
+  ['Encapsulation','Bundling data with methods and hiding the data behind private.'],
+  ['Inheritance','A class acquiring the fields and methods of another class.'],
+  ['Polymorphism','One name, many forms: the same call behaves differently per object.'],
+  ['Abstraction','Showing what something does while hiding how it does it.'],
+  ['Instantiation','Creating an object from a class using new.'],
+  ['void','Return type meaning the method returns nothing.']
+];
+let fi = 0;
+function showCard(){ const [t,d] = CARDS[fi]; $('#fc').classList.remove('flip'); setTimeout(()=>{ $('#fcT').textContent = t; $('#fcD').textContent = d; }, 120); $('#fcN').textContent = (fi+1) + ' / ' + CARDS.length; }
+$('#fc').onclick = () => $('#fc').classList.toggle('flip');
+$('#fc').onkeydown = e => { if(e.key===' '||e.key==='Enter'){ e.preventDefault(); $('#fc').classList.toggle('flip'); } };
+$('#fcNext').onclick = () => { fi = (fi+1) % CARDS.length; showCard(); };
+$('#fcPrev').onclick = () => { fi = (fi-1+CARDS.length) % CARDS.length; showCard(); };
+$('#fcShuf').onclick = () => { CARDS = shuffle(CARDS); fi = 0; showCard(); };
+document.addEventListener('keydown', e => {
+  if(!$('#v-cards').classList.contains('on')) return;
+  if(e.key==='ArrowRight') $('#fcNext').click();
+  if(e.key==='ArrowLeft') $('#fcPrev').click();
+});
+$('#fcT').textContent = CARDS[0][0]; $('#fcD').textContent = CARDS[0][1]; $('#fcN').textContent = '1 / ' + CARDS.length;
+
+route();
+})();
+</script>
+</body>
+</html>
